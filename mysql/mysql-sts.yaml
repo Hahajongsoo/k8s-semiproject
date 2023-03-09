@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: mysql
+  namespace: database
 spec:
   selector:
     matchLabels:
@@ -85,7 +86,7 @@ spec:
               command:
                 - bash
                 - "-c"
-                - mysql -h 127.0.0.1 --password=$MYSQL_ROOT_PASSWORD -e "SELECT 1"  # 루트패스워드를 설정했기 때문에 패스워드 추가해야함 
+                - mysql -h 127.0.0.1 --password=$MYSQL_ROOT_PASSWORD -e "SELECT 1" # 루트패스워드를 설정했기 때문에 패스워드 추가해야함
             initialDelaySeconds: 5
             periodSeconds: 2
             timeoutSeconds: 1
@@ -98,7 +99,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: mysql
-                  key: root-password
+                  key: MYSQL_ROOT_PASSWORD
           command:
             - bash
             - "-c"
@@ -128,7 +129,7 @@ spec:
                 mv change_master_to.sql.in change_master_to.sql.orig
               fi
               exec ncat --listen --keep-open --send-only --max-conns=1 3307 -c \
-                "xtrabackup --backup --slave-info --stream=xbstream --host=127.0.0.1 --user=root --password=$MYSQL_ROOT_PASSWORD" 
+                "xtrabackup --backup --slave-info --stream=xbstream --host=127.0.0.1 --user=root --password=$MYSQL_ROOT_PASSWORD"
           volumeMounts:
             - name: data
               mountPath: /var/lib/mysql
