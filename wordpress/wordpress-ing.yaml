@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: wordpress
+spec:
+  tls:
+    - hosts:
+        - blog.hahajong.store
+      secretName: wordpress-tls
+  defaultBackend:
+    service:
+      name: wordpress
+      port:
+        number: 80
+  rules:
+    - host: blog.hahajong.store
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: wordpress
+                port:
+                  number: 80

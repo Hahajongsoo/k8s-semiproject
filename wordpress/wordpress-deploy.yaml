@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wordpress
+spec:
+  selector:
+    matchLabels:
+      app: wordpress
+      app.kubernetes.io/name: wordpress
+  template:
+    metadata:
+      name: wordpress
+      labels:
+        app: wordpress
+        app.kubernetes.io/name: wordpress
+    spec:
+      containers:
+        - name: wordpress
+          image: wordpress:6.1
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "500m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+          envFrom:
+            - secretRef:
+                name: wordpress
+          ports:
+            - containerPort: 80
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 10
+            periodSeconds: 3
+          readinessProbe:
+            tcpSocket:
+              port: 80
+            initialDelaySeconds: 10
+            periodSeconds: 3
+          volumeMounts:
+            - mountPath: /var/www/html
+              name: wordpress-data
+      volumes:
+        - name: wordpress-data
+          persistentVolumeClaim:
+            claimName: wordpress
