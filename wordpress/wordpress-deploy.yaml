@@ -3,6 +3,7 @@ kind: Deployment
 metadata:
   name: wordpress
 spec:
+  replicas: 1
   selector:
     matchLabels:
       app: wordpress
@@ -29,21 +30,32 @@ spec:
                 name: wordpress
           ports:
             - containerPort: 80
+            - containerPort: 443
           livenessProbe:
             httpGet:
-              path: /
+              path: /aGVhbHRoY2hlY2s
               port: 80
-            initialDelaySeconds: 10
-            periodSeconds: 3
+            initialDelaySeconds: 5
+            periodSeconds: 2
           readinessProbe:
             tcpSocket:
               port: 80
-            initialDelaySeconds: 10
-            periodSeconds: 3
+            initialDelaySeconds: 5
+            periodSeconds: 2
           volumeMounts:
-            - mountPath: /var/www/html
-              name: wordpress-data
+            - name: wordpress-data
+              mountPath: /var/www/html
+            - name: config
+              mountPath: /etc/apache2/sites-available
+            - name: index
+              mountPath: /var/www/html/aGVhbHRoY2hlY2s
       volumes:
         - name: wordpress-data
           persistentVolumeClaim:
             claimName: wordpress
+        - name: config
+          configMap:
+            name: wordpress
+        - name: index
+          configMap:
+            name: healthcheck

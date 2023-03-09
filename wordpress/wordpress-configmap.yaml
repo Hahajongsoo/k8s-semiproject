@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: wordpress
+data:
+  default.conf: |
+    <VirtualHost *:80>
+        ServerAdmin webmaster@localhost
+        ServerName: blog.hahajong.store
+        DocumentRoot /var/www/html
+        ErrorLog ${APACHE_LOG_DIR}/error.log
+        CustomLog ${APACHE_LOG_DIR}/access.log combined
+    </VirtualHost>
+
+    <VirtualHost *:80>
+        ServerAdmin webmaster@localhost
+        ServerName: healthcheck
+        DocumentRoot /var/www/html/aGVhbHRoY2hlY2s
+        ErrorLog ${APACHE_LOG_DIR}/error.log
+        CustomLog ${APACHE_LOG_DIR}/access.log combined
+    </VirtualHost>
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: healthcheck
+data:
+  index.html: |
+    <html>
+
+    <body>
+      <div>
+        It Works!
+      </div>
+    </body>
+
+    </html>
