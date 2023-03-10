@@ -23,6 +23,7 @@ MySQL APP
 - Secret
 - PVC
 - Service
+- Network Policy
 
 # MySQL 구성
 ## Config Map
@@ -36,6 +37,8 @@ MySQL APP
 ## Stateful Set
 - 파드마다 이름이 순서대로 정해지기 때문에 (mysql-0, mysql-1 ...) 이를 이용하여 쉘스크립트로 Primary 역할을 하는 파드와 Read Replica의 역할을 하는 파드들의 환경 구성을 다르게 함
 - stateful set에 포함된 pvc에 자동으로 pv가 할당되게 하기 위해 동적 프로비저닝을 사용하고 이를 위한 default storage class로 nfs-subdir-external-provisioner를 사용함
+## Network Policy
+- wordpress 파드에서만 mysql 파드에 접근할 수 있도록 네트워크 정책 적용
 
 # Wordpress 구성
 ## Config Map
