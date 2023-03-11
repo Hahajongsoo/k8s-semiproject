@@ -13,12 +13,20 @@ spec:
   ingress:
     - from:
         - namespaceSelector:
-            matchLabels:
-              kubernetes.io/metadata.name: default
+            matchExpressions:
+              - key: kubernetes.io/metadata.name
+                operator: In
+                values: [default, database]
         - podSelector:
-            matchLabels:
-              app: wordpress
-              app.kubernetes.io/name: wordpress
+            matchExpressions:
+              - key: app
+                operator: In
+                values: [wordpress, mysql]
+              - key: app.kubernetes.io/name
+                operator: In
+                values: [wordpress, mysql]
       ports:
         - protocol: TCP
           port: 3306
+        - protocol: TCP
+          port: 3307
